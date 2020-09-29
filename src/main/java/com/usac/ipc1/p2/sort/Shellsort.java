@@ -27,13 +27,25 @@ public class Shellsort {
     public Shellsort(boolean sortSense) {
         this.sortSense = sortSense;
     }
-    
+
     /**
      * Ordena utilizando el algoritmo shellsort
-     * @param b 
+     *
+     * @param b
      * @return
      */
-    public BarGraph sort(BarGraph b){
+    public BarGraph sort(BarGraph b) {
+        // Comienza con un intervalo grande, hasta llegar a 1
+        for (int gap = b.actualSize() / 2; gap > 0; gap /= 2) {
+            for (int i = gap; i < b.actualSize(); i++) {
+                var temp = b.dat[i];
+                int j;
+                for (j = i; j >= gap && b.dat[j - gap].value > temp.value; j -= gap) {
+                    b.dat[j] = b.dat[j - gap];
+                }
+                b.dat[j] = temp;
+            }
+        }
         return b;
     }
 }
