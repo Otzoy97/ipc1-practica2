@@ -26,25 +26,27 @@ public class BarGraph {
     /**
      * Titulo para el eje de las x
      */
-    public String tituloX;
+    private String tituloX;
     /**
      * Titulo para el eje de las y
      */
-    public String tituloY;
+    private String tituloY;
     /**
      * Titulo para la gráfica
      */
-    public String tituloGraph;
+    private String tituloGraph;
 
     /**
      * Constructor para la gráfica de barras
      * 
      * @param tituloX título para el eje x
      * @param tituloY título para el eje y
+     * @param tituloGrafica título para la gráfica
      */
-    public BarGraph(String tituloX, String tituloY) {
+    public BarGraph(String tituloX, String tituloY, String tituloGrafica) {
         this.tituloX = tituloX;
         this.tituloY = tituloY;
+        this.tituloGraph = tituloGrafica;
         this.dat = new Bar[10];
     }
 
@@ -63,6 +65,7 @@ public class BarGraph {
         for (int i = 0; i < dat.length; i++) {
             if (dat[i] == null) {
                 dat[i] = new Bar(name, value);
+                datCount++;
                 return;
             }
         }
@@ -73,17 +76,16 @@ public class BarGraph {
      * @return
      * @throws IOException 
      */
-    public byte[] render() throws IOException {
+    public BufferedImage render() throws IOException {
         DefaultCategoryDataset data = new DefaultCategoryDataset();
         for (int i = 0; i < datCount; i++) {
-            data.addValue(dat[i].value, tituloY, dat[i].name);
+            data.addValue(dat[i].value, dat[i].name, this.tituloX);
         }
         JFreeChart chart = ChartFactory.createBarChart(this.tituloGraph, this.tituloX, this.tituloY, data,
-                PlotOrientation.VERTICAL, false, true, false);
-        BufferedImage img = chart.createBufferedImage(1000, 600);
-        return EncoderUtil.encode(img, ImageFormat.PNG);
+                PlotOrientation.VERTICAL, true, true, false);
+        return chart.createBufferedImage(1000, 800);
     }
-    
+        
     /**
      * Recupera la cantidad de elementos almacenados en el arreglo
      * @return 
