@@ -30,6 +30,8 @@ import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 
 import com.usac.ipc1.p2.graph.BarGraph;
+import java.awt.image.BufferedImage;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -51,12 +53,16 @@ public class PlotterFrame extends JFrame {
 
     private String CSVFile;
 
+    public static BarGraph unsortedGraph, sortedGraph;
+
     /**
      * Constructor
      */
     public PlotterFrame() {
         init();
         CSVFile = null;
+        unsortedGraph = null;
+        sortedGraph = null;
     }
 
     /**
@@ -101,19 +107,21 @@ public class PlotterFrame extends JFrame {
             // Recupera los encabezados
             String[] titles = lines[0].split(",");
             // Inicializa la gráfica
-            BarGraph graph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
+            unsortedGraph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
+            sortedGraph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
             // Inserta los valores
             for (int i = 1; i < lines.length; i++) {
                 String[] dat = lines[i].split(",");
-                graph.add(dat[0], Integer.parseInt(dat[1]));
+                unsortedGraph.add(dat[0], Integer.parseInt(dat[1]));
+                sortedGraph.add(dat[0], Integer.parseInt(dat[1]));
             }
             // Genera la gráfica y la inserta en una etiqueta
-            this.lblImg.setIcon(new ImageIcon(graph.render()));
+            this.lblImg.setIcon(new ImageIcon(sortedGraph.render()));
             this.lblImg.revalidate();
             this.lblImg.repaint();
             this.lblImg.update(lblImg.getGraphics());
             // Habilita el botón para ordenar la gráfica
-            this.btnSortGraph.setEnabled(false);
+            this.btnSortGraph.setEnabled(true);
         } catch (IOException | NumberFormatException ex) {
             System.out.println(ex.getMessage());
         }
@@ -124,7 +132,15 @@ public class PlotterFrame extends JFrame {
      * @param e
      */
     private void btnSortGraphAction(ActionEvent e) {
-
+        
+        // Generar reporte html
+        Rep r = new Rep("Bubblesort", lblTiempo.getText(), lblVelocidad.getText(),lblPasos.getText(), lblOrden.getText());
+        String txtHTML = r.genRep();
+        try (FileWriter f = new FileWriter("reporte.html")){
+            f.write(txtHTML);
+        } catch (IOException ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     /**
