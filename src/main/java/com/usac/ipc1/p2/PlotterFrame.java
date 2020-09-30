@@ -14,6 +14,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 
@@ -45,6 +46,8 @@ public class PlotterFrame extends JFrame {
     private ButtonGroup btnGAlgorithm, btnGType;
     private JRadioButton rbtnAsce, rbtnDesc, rbtnBubble, rbtnShell, rbtnQuick;
     private JSlider slidVelocity;
+
+    private JLabel lblAlgoritmo, lblVelocidad, lblOrden, lblTiempo, lblPasos;
 
     private String CSVFile;
 
@@ -80,16 +83,18 @@ public class PlotterFrame extends JFrame {
      * @param e
      */
     private void btnGenGraphAction(ActionEvent e) {
-        if (this.CSVFile == null){
-            JOptionPane.showMessageDialog(this, "Cargue un archivo *.csv con el formato correcto", "Generar gráfica", JOptionPane.WARNING_MESSAGE);
+        if (this.CSVFile == null) {
+            JOptionPane.showMessageDialog(this, "Cargue un archivo *.csv con el formato correcto", "Generar gráfica",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (this.txtTitleGraph.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Indique el título de la gráfica", "Generar gráfica", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Indique el título de la gráfica", "Generar gráfica",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
         // Recupera la información del archivo csv
-        try{
+        try {
             String textFile = Files.readString(Paths.get(CSVFile), StandardCharsets.UTF_8);
             // Separa por lineas
             String[] lines = textFile.split("\n");
@@ -98,7 +103,7 @@ public class PlotterFrame extends JFrame {
             // Inicializa la gráfica
             BarGraph graph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
             // Inserta los valores
-            for (int i = 1 ; i < lines.length; i++){
+            for (int i = 1; i < lines.length; i++) {
                 String[] dat = lines[i].split(",");
                 graph.add(dat[0], Integer.parseInt(dat[1]));
             }
@@ -119,7 +124,7 @@ public class PlotterFrame extends JFrame {
      * @param e
      */
     private void btnSortGraphAction(ActionEvent e) {
-        
+
     }
 
     /**
@@ -131,7 +136,8 @@ public class PlotterFrame extends JFrame {
         btnGAlgorithm = new ButtonGroup();
         btnGType = new ButtonGroup();
 
-        setMinimumSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(1024, 576));
+        setMinimumSize(new Dimension(800, 450));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("[IPC1] - Práctica 2");
 
@@ -140,7 +146,7 @@ public class PlotterFrame extends JFrame {
         // Panel que contendrá todo lo demás
         // -----------------------------------------------------
         JPanel panel01 = new JPanel(new GridBagLayout());
-        //panel01.setBackground(Color.LIGHT_GRAY);
+        // panel01.setBackground(Color.LIGHT_GRAY);
         panel01.setOpaque(true);
 
         gridBag = new GridBagConstraints();
@@ -155,7 +161,7 @@ public class PlotterFrame extends JFrame {
         // -----------------------------------------------------
         JPanel upperPanel = new JPanel(new GridBagLayout());
         upperPanel.setBorder(BorderFactory.createEtchedBorder());
-        //upperPanel.setBackground(Color.WHITE);
+        // upperPanel.setBackground(Color.WHITE);
         upperPanel.setOpaque(true);
 
         gridBag = new GridBagConstraints();
@@ -169,7 +175,7 @@ public class PlotterFrame extends JFrame {
         // Panel inferior
         // -----------------------------------------------------
         JPanel bottomPanel = new JPanel(new GridBagLayout());
-        //bottomPanel.setBackground(Color.WHITE);
+        // bottomPanel.setBackground(Color.WHITE);
         bottomPanel.setOpaque(true);
 
         gridBag = new GridBagConstraints();
@@ -255,6 +261,7 @@ public class PlotterFrame extends JFrame {
         gridBag = new GridBagConstraints();
         gridBag.gridx = 0;
         gridBag.gridy = 0;
+        gridBag.gridheight = 2;
         gridBag.fill = GridBagConstraints.BOTH;
         gridBag.weightx = 1.0;
         gridBag.weighty = 1.0;
@@ -266,24 +273,175 @@ public class PlotterFrame extends JFrame {
         lblImg.setBackground(Color.WHITE);
         lblImg.setOpaque(true);
 
+        JScrollPane jscPane = new JScrollPane(lblImg, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         gridBag = new GridBagConstraints();
         gridBag.gridx = 0;
         gridBag.gridy = 0;
         gridBag.fill = GridBagConstraints.BOTH;
         gridBag.weightx = 1.0;
         gridBag.weighty = 1.0;
-        leftPanel.add(lblImg, gridBag);
+        leftPanel.add(jscPane, gridBag);
         // -----------------------------------------------------
-        JPanel rightPanel = new JPanel(new GridBagLayout());
-        rightPanel.setBorder(BorderFactory.createEtchedBorder());
-        //rightPanel.setBackground(Color.WHITE);
-        rightPanel.setOpaque(true);
+        JPanel rightUpPanel = new JPanel(new GridBagLayout());
+        rightUpPanel.setBorder(BorderFactory.createEtchedBorder());
+        rightUpPanel.setOpaque(true);
 
         gridBag = new GridBagConstraints();
         gridBag.gridx = 1;
         gridBag.gridy = 0;
         gridBag.fill = GridBagConstraints.BOTH;
         gridBag.insets = new Insets(0, 5, 0, 0);
+        gridBag.weighty = 0.25;
+        bottomPanel.add(rightUpPanel, gridBag);
+        // ETIQUETA ALGORITMO
+        lblAlgoritmo = new JLabel(" ");
+        lblAlgoritmo.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 16));
+        lblAlgoritmo.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 0;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(5, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        gridBag.weighty = 1.0;
+        rightUpPanel.add(lblAlgoritmo, gridBag);
+
+        JLabel etiq0 = new JLabel("Algoritmo");
+        etiq0.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 10));
+        etiq0.setHorizontalAlignment(SwingConstants.CENTER);
+        etiq0.setBackground(Color.LIGHT_GRAY);
+        etiq0.setOpaque(true);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 1;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        rightUpPanel.add(etiq0, gridBag);
+        // ETIQUETA VELOCIDAD
+        lblVelocidad = new JLabel(" ");
+        lblVelocidad.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 16));
+        lblVelocidad.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 2;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        gridBag.weighty = 1.0;
+        rightUpPanel.add(lblVelocidad, gridBag);
+
+        etiq0 = new JLabel("Velocidad");
+        etiq0.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 10));
+        etiq0.setHorizontalAlignment(SwingConstants.CENTER);
+        etiq0.setBackground(Color.LIGHT_GRAY);
+        etiq0.setOpaque(true);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 3;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        rightUpPanel.add(etiq0, gridBag);
+        // ETIQUETA ORDEN
+        lblOrden = new JLabel(" ");
+        lblOrden.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 16));
+        lblOrden.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 4;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        gridBag.weighty = 1.0;
+        rightUpPanel.add(lblOrden, gridBag);
+
+        etiq0 = new JLabel("Orden");
+        etiq0.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 10));
+        etiq0.setHorizontalAlignment(SwingConstants.CENTER);
+        etiq0.setBackground(Color.LIGHT_GRAY);
+        etiq0.setOpaque(true);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 5;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        rightUpPanel.add(etiq0, gridBag);
+        // ETIQUETA TIEMPO
+        lblTiempo = new JLabel(" ");
+        lblTiempo.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 16));
+        lblTiempo.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 6;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        gridBag.weighty = 1.0;
+        rightUpPanel.add(lblTiempo, gridBag);
+
+        etiq0 = new JLabel("Tiempo");
+        etiq0.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 10));
+        etiq0.setHorizontalAlignment(SwingConstants.CENTER);
+        etiq0.setBackground(Color.LIGHT_GRAY);
+        etiq0.setOpaque(true);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 7;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        rightUpPanel.add(etiq0, gridBag);
+        // ETIQUETA PASOS
+        lblPasos = new JLabel(" ");
+        lblPasos.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 16));
+        lblPasos.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 8;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 0, 5);
+        gridBag.weightx = 1.0;
+        gridBag.weighty = 1.0;
+        rightUpPanel.add(lblPasos, gridBag);
+
+        etiq0 = new JLabel("Pasos");
+        etiq0.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 10));
+        etiq0.setHorizontalAlignment(SwingConstants.CENTER);
+        etiq0.setBackground(Color.LIGHT_GRAY);
+        etiq0.setOpaque(true);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 0;
+        gridBag.gridy = 9;
+        gridBag.fill = GridBagConstraints.HORIZONTAL;
+        gridBag.insets = new Insets(0, 5, 5, 5);
+        gridBag.weightx = 1.0;
+        rightUpPanel.add(etiq0, gridBag);
+        // -----------------------------------------------------
+        JPanel rightPanel = new JPanel(new GridBagLayout());
+        rightPanel.setBorder(BorderFactory.createEtchedBorder());
+        // rightPanel.setBackground(Color.WHITE);
+        rightPanel.setOpaque(true);
+
+        gridBag = new GridBagConstraints();
+        gridBag.gridx = 1;
+        gridBag.gridy = 1;
+        gridBag.fill = GridBagConstraints.BOTH;
+        gridBag.insets = new Insets(5, 5, 0, 0);
+        gridBag.weighty = 0.75;
         bottomPanel.add(rightPanel, gridBag);
         // ETIQUETA ALGORITMO
         JLabel lblAlgorithm = new JLabel("Algoritmo");
@@ -339,7 +497,7 @@ public class PlotterFrame extends JFrame {
         gridBag.fill = GridBagConstraints.BOTH;
         rightPanel.add(sep0, gridBag);
         // ETIQUETA SENTIDO DE ORDENACION
-        JLabel lblSenseSort = new JLabel("Tipo");
+        JLabel lblSenseSort = new JLabel("Orden");
         lblSenseSort.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 12));
 
         gridBag = new GridBagConstraints();
