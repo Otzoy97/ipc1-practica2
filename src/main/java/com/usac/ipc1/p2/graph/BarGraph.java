@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.encoders.EncoderUtil;
-import org.jfree.chart.encoders.ImageFormat;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -39,8 +37,8 @@ public class BarGraph {
     /**
      * Constructor para la gráfica de barras
      * 
-     * @param tituloX título para el eje x
-     * @param tituloY título para el eje y
+     * @param tituloX       título para el eje x
+     * @param tituloY       título para el eje y
      * @param tituloGrafica título para la gráfica
      */
     public BarGraph(String tituloX, String tituloY, String tituloGrafica) {
@@ -73,8 +71,9 @@ public class BarGraph {
 
     /**
      * Genera la gráfica y la devuelve en base64
+     * 
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public BufferedImage render() throws IOException {
         DefaultCategoryDataset data = new DefaultCategoryDataset();
@@ -85,12 +84,21 @@ public class BarGraph {
                 PlotOrientation.VERTICAL, true, true, false);
         return chart.createBufferedImage(1000, 800);
     }
-        
+
     /**
      * Recupera la cantidad de elementos almacenados en el arreglo
-     * @return 
+     * 
+     * @return
      */
-    public int actualSize(){
+    public int actualSize() {
         return this.datCount;
+    }
+
+    public String getTituloX() {
+        return tituloX;
+    }
+
+    public String getTituloY() {
+        return tituloY;
     }
 }
