@@ -35,8 +35,14 @@ public class Shellsort {
             for (int i = gap; i < b.actualSize(); i++) {
                 var temp = b.dat[i];
                 int j;
-                for (j = i; j >= gap && b.dat[j - gap].value > temp.value; j -= gap) {
-                    b.dat[j] = b.dat[j - gap];
+                if (sortSense){
+                    for (j = i; j >= gap && b.dat[j - gap].value > temp.value; j -= gap) {
+                        b.dat[j] = b.dat[j - gap];
+                    }
+                } else {
+                    for (j = i; j >= gap && b.dat[j - gap].value < temp.value; j -= gap) {
+                        b.dat[j] = b.dat[j - gap];
+                    }
                 }
                 b.dat[j] = temp;
             }
