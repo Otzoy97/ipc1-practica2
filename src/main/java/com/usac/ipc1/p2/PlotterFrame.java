@@ -3,11 +3,14 @@ package com.usac.ipc1.p2;
 import java.awt.GridBagConstraints;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
@@ -20,7 +23,14 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.swing.ImageIcon;
+
+import com.usac.ipc1.p2.graph.BarGraph;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -36,10 +46,85 @@ public class PlotterFrame extends JFrame {
     private JRadioButton rbtnAsce, rbtnDesc, rbtnBubble, rbtnShell, rbtnQuick;
     private JSlider slidVelocity;
 
+    private String CSVFile;
+
+    /**
+     * Constructor
+     */
     public PlotterFrame() {
         init();
+        CSVFile = null;
     }
 
+    /**
+     * Muestra un selector de archivo para cargar el archivo .csv
+     *
+     * @param e
+     */
+    private void btnFindPathAction(ActionEvent e) {
+        // Muestra el dialogo
+        JFileChooser fChooser = new JFileChooser();
+        fChooser.setMultiSelectionEnabled(false);
+        fChooser.setDialogTitle("Abrir...");
+        fChooser.setFileFilter(new FileNameExtensionFilter("Archivo separado por comas (*.csv)", "csv"));
+        int r = fChooser.showDialog(this, "Abrir");
+        if (r == JFileChooser.APPROVE_OPTION) {
+            this.lblPath.setText(fChooser.getSelectedFile().getAbsolutePath());
+            CSVFile = fChooser.getSelectedFile().getAbsolutePath();
+        }
+    }
+
+    /**
+     * Genera la gŕafica sin ordenar
+     *
+     * @param e
+     */
+    private void btnGenGraphAction(ActionEvent e) {
+        if (this.CSVFile == null){
+            JOptionPane.showMessageDialog(this, "Cargue un archivo *.csv con el formato correcto", "Generar gráfica", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (this.txtTitleGraph.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Indique el título de la gráfica", "Generar gráfica", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // Recupera la información del archivo csv
+        try{
+            String textFile = Files.readString(Paths.get(CSVFile), StandardCharsets.UTF_8);
+            // Separa por lineas
+            String[] lines = textFile.split("\n");
+            // Recupera los encabezados
+            String[] titles = lines[0].split(",");
+            // Inicializa la gráfica
+            BarGraph graph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
+            // Inserta los valores
+            for (int i = 1 ; i < lines.length; i++){
+                String[] dat = lines[i].split(",");
+                graph.add(dat[0], Integer.parseInt(dat[1]));
+            }
+            // Genera la gráfica y la inserta en una etiqueta
+            this.lblImg.setIcon(new ImageIcon(graph.render()));
+            this.lblImg.revalidate();
+            this.lblImg.repaint();
+            this.lblImg.update(lblImg.getGraphics());
+            // Habilita el botón para ordenar la gráfica
+            this.btnSortGraph.setEnabled(false);
+        } catch (IOException | NumberFormatException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param e
+     */
+    private void btnSortGraphAction(ActionEvent e) {
+        
+    }
+
+    /**
+     * Inicializa y configura los componentes
+     */
     private void init() {
         GridBagConstraints gridBag;
 
@@ -114,7 +199,7 @@ public class PlotterFrame extends JFrame {
         btnFindPath.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 12));
         btnFindPath.setHorizontalAlignment(SwingConstants.CENTER);
         btnFindPath.addActionListener((ActionEvent e) -> {
-            //TODO: acción para el boton
+            btnFindPathAction(e);
         });
 
         gridBag = new GridBagConstraints();
@@ -151,7 +236,7 @@ public class PlotterFrame extends JFrame {
         btnGenGraph.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 12));
         btnGenGraph.setHorizontalAlignment(SwingConstants.CENTER);
         btnGenGraph.addActionListener((ActionEvent e) -> {
-            //TODO: acción para el boton
+            btnGenGraphAction(e);
         });
 
         gridBag = new GridBagConstraints();
@@ -177,6 +262,7 @@ public class PlotterFrame extends JFrame {
         bottomPanel.add(leftPanel, gridBag);
 
         lblImg = new JLabel(" ");
+        lblImg.setHorizontalAlignment(SwingConstants.CENTER);
         lblImg.setBackground(Color.WHITE);
         lblImg.setOpaque(true);
 
@@ -306,7 +392,7 @@ public class PlotterFrame extends JFrame {
         gridBag.insets = new Insets(5, 5, 0, 5);
         rightPanel.add(lblVelocity, gridBag);
         // SLIDER VELOCIDAD
-        slidVelocity = new JSlider(0,2,1);
+        slidVelocity = new JSlider(0, 2, 1);
         slidVelocity.setPaintLabels(true);
         slidVelocity.setPaintTicks(false);
         slidVelocity.setSnapToTicks(true);
@@ -326,10 +412,11 @@ public class PlotterFrame extends JFrame {
         rightPanel.add(slidVelocity, gridBag);
         // BOTON ORDENAR
         btnSortGraph = new JButton("Ordenar gráfica");
+        btnSortGraph.setEnabled(false);
         btnSortGraph.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 12));
         btnSortGraph.setHorizontalAlignment(SwingConstants.CENTER);
         btnSortGraph.addActionListener((ActionEvent e) -> {
-            //TODO: acción para el boton
+            btnSortGraphAction(e);
         });
 
         gridBag = new GridBagConstraints();
