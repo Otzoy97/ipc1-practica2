@@ -30,10 +30,13 @@ import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 
 import com.usac.ipc1.p2.graph.BarGraph;
+import com.usac.ipc1.p2.sort.Bubblesort;
 import java.awt.image.BufferedImage;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -42,18 +45,20 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("serial")
 public class PlotterFrame extends JFrame {
 
-    private JLabel lblPath, lblImg;
+    private JLabel lblPath;
+    public static JLabel lblImg;
     private JButton btnFindPath, btnGenGraph, btnSortGraph;
     private JTextField txtTitleGraph;
     private ButtonGroup btnGAlgorithm, btnGType;
     private JRadioButton rbtnAsce, rbtnDesc, rbtnBubble, rbtnShell, rbtnQuick;
     private JSlider slidVelocity;
 
-    private JLabel lblAlgoritmo, lblVelocidad, lblOrden, lblTiempo, lblPasos;
+    protected static JLabel lblTiempo, lblPasos;
+    private JLabel lblAlgoritmo, lblOrden, lblVelocidad;
 
     private String CSVFile;
 
-    public static BarGraph unsortedGraph, sortedGraph;
+    protected static BarGraph unsortedGraph, sortedGraph;
 
     /**
      * Constructor
@@ -116,10 +121,7 @@ public class PlotterFrame extends JFrame {
                 sortedGraph.add(dat[0], Integer.parseInt(dat[1]));
             }
             // Genera la gráfica y la inserta en una etiqueta
-            this.lblImg.setIcon(new ImageIcon(sortedGraph.render()));
-            this.lblImg.revalidate();
-            this.lblImg.repaint();
-            this.lblImg.update(lblImg.getGraphics());
+            PlotterFrame.renderGraph(0);
             // Habilita el botón para ordenar la gráfica
             this.btnSortGraph.setEnabled(true);
         } catch (IOException | NumberFormatException ex) {
@@ -132,15 +134,29 @@ public class PlotterFrame extends JFrame {
      * @param e
      */
     private void btnSortGraphAction(ActionEvent e) {
-        
-        // Generar reporte html
-        Rep r = new Rep("Bubblesort", lblTiempo.getText(), lblVelocidad.getText(),lblPasos.getText(), lblOrden.getText());
-        String txtHTML = r.genRep();
-        try (FileWriter f = new FileWriter("reporte.html")){
-            f.write(txtHTML);
-        } catch (IOException ex){
-            System.out.println(ex.getMessage());
-        }
+        new Bubblesort(true, sortedGraph, 300).start();
+    }
+
+    /**
+     * Actualiza la gráfica
+     *
+     * @param pasos
+     * @throws java.io.IOException
+     */
+    public static void renderGraph(int pasos) throws IOException {
+        // Actualiza la gráfica
+        var temp = new ImageIcon(sortedGraph.render());
+        lblImg.setIcon(temp);
+        lblImg.revalidate();
+        lblImg.repaint();
+        lblImg.update(lblImg.getGraphics());
+        // Actualiza el tiempo y los pasos
+        lblPasos.setText(pasos + "");
+    }
+    
+    public static void updateTime(long tiempo){
+        DateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
+        lblTiempo.setText(sdf.format(tiempo));
     }
 
     /**
