@@ -2,7 +2,9 @@ package com.usac.ipc1.p2.sort;
 
 import com.usac.ipc1.p2.PlotterFrame;
 import com.usac.ipc1.p2.Rep;
+import com.usac.ipc1.p2.graph.Bar;
 import com.usac.ipc1.p2.graph.BarGraph;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -77,7 +79,7 @@ public class Quicksort extends Thread implements Runnable {
      */
     private int partitionAsc(BarGraph b, int x, int y) {
         // Se elije como pivote el valor medio
-        int pv = b.dat[(y + x) / 2].value;
+        Bar pv = b.dat[(y + x) / 2];
         // Toma una referencia del valor más hacia la izquierda
         int i = x - 1;
         // Toma una referencia del valor más hacia la derecha
@@ -86,11 +88,11 @@ public class Quicksort extends Thread implements Runnable {
             // Avanza hacia la derecha
             do {
                 i++;
-            } while (b.dat[i].value < pv);
+            } while (b.dat[i].compare(pv)== -1);
             // Avanza hacia la izquierda
             do {
                 j--;
-            } while (b.dat[j].value > pv);
+            } while (b.dat[j].compare(pv) == 1);
             // Detiene el ciclo
             if (i >= j) {
                 return j;
@@ -114,7 +116,7 @@ public class Quicksort extends Thread implements Runnable {
      */
     private int partitionDesc(BarGraph b, int x, int y) {
         // Se elije como pivote el valor medio
-        int pv = b.dat[(y + x) / 2].value;
+        Bar pv = b.dat[(y + x) / 2];
 
         int i = x - 1;
         int j = y + 1;
@@ -122,11 +124,11 @@ public class Quicksort extends Thread implements Runnable {
             // Avanza hacia la derecha
             do {
                 i++;
-            } while (b.dat[i].value > pv);
+            } while (b.dat[i].compare(pv) == 1);
             // Avanza hacia la izquierda
             do {
                 j--;
-            } while (b.dat[j].value < pv);
+            } while (b.dat[j].compare(pv) == -1);
             // Detiene el ciclo
             if (i >= j) {
                 return j;

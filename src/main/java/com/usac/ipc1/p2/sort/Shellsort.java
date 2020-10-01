@@ -51,7 +51,7 @@ public class Shellsort extends Thread implements Runnable {
                 var temp = b.dat[i];
                 int j;
                 if (sortSense) {
-                    for (j = i; j >= gap && b.dat[j - gap].value > temp.value; j -= gap) {
+                    for (j = i; j >= gap && b.dat[j - gap].compare(temp) == 1; j -= gap) {
                         // Cuenta los pasos
                         pasos++;
                         b.dat[j] = b.dat[j - gap];
@@ -61,7 +61,7 @@ public class Shellsort extends Thread implements Runnable {
                         this.updateT();
                     }
                 } else {
-                    for (j = i; j >= gap && b.dat[j - gap].value < temp.value; j -= gap) {
+                    for (j = i; j >= gap && b.dat[j - gap].compare(temp) == -1; j -= gap) {
                         // Cuenta los pasos
                         pasos++;
                         b.dat[j] = b.dat[j - gap];

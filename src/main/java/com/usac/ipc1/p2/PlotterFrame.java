@@ -36,6 +36,8 @@ import com.usac.ipc1.p2.sort.Shellsort;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -113,19 +115,19 @@ public class PlotterFrame extends JFrame {
             // Recupera los encabezados
             String[] titles = lines[0].split(",");
             // Inicializa la gráfica
-            unsortedGraph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
-            sortedGraph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText());
+            unsortedGraph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText(), lines.length - 1);
+            sortedGraph = new BarGraph(titles[0], titles[1], this.txtTitleGraph.getText(), lines.length - 1);
             // Inserta los valores
             for (int i = 1; i < lines.length; i++) {
                 String[] dat = lines[i].split(",");
-                unsortedGraph.add(dat[0], Integer.parseInt(dat[1]));
-                sortedGraph.add(dat[0], Integer.parseInt(dat[1]));
+                unsortedGraph.add(dat[0], NumberFormat.getInstance().parse(dat[1]));
+                sortedGraph.add(dat[0], NumberFormat.getInstance().parse(dat[1]));
             }
             // Genera la gráfica y la inserta en una etiqueta
             PlotterFrame.renderGraph(0);
             // Habilita el botón para ordenar la gráfica
             PlotterFrame.btnSortGraph.setEnabled(true);
-        } catch (IOException | NumberFormatException ex) {
+        } catch (IOException | ParseException ex) {
             System.out.println(ex.getMessage());
         }
     }

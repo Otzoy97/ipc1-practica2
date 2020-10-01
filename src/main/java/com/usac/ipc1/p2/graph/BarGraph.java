@@ -24,15 +24,15 @@ public class BarGraph {
     /**
      * Titulo para el eje de las x
      */
-    private String tituloX;
+    private final String tituloX;
     /**
      * Titulo para el eje de las y
      */
-    private String tituloY;
+    private final String tituloY;
     /**
      * Titulo para la gráfica
      */
-    private String tituloGraph;
+    private final String tituloGraph;
 
     /**
      * Constructor para la gráfica de barras
@@ -40,12 +40,13 @@ public class BarGraph {
      * @param tituloX       título para el eje x
      * @param tituloY       título para el eje y
      * @param tituloGrafica título para la gráfica
+     * @param maxData cantidad de datos
      */
-    public BarGraph(String tituloX, String tituloY, String tituloGrafica) {
+    public BarGraph(String tituloX, String tituloY, String tituloGrafica, int maxData) {
         this.tituloX = tituloX;
         this.tituloY = tituloY;
         this.tituloGraph = tituloGrafica;
-        this.dat = new Bar[10];
+        this.dat = new Bar[maxData];
     }
 
     /**
@@ -54,7 +55,7 @@ public class BarGraph {
      * @param name
      * @param value
      */
-    public void add(String name, int value) {
+    public void add(String name, Number value) {
         // Ya no hay espacio
         if (datCount == dat.length) {
             return;

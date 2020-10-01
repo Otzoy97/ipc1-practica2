@@ -51,13 +51,13 @@ public class Bubblesort extends Thread implements Runnable {
                 // Cuenta los pasos
                 pasos++;
                 // Según el sentido de ordenamiento, ordena
-                if (sortSense && b.dat[j].value > b.dat[j + 1].value) {
+                if (sortSense && b.dat[j].compare(b.dat[j + 1]) == 1) {
                     // Ascendentemente
                     // Intercambia los datos
                     Sort.swap(b.dat, j, j + 1);
                     // Actualiza la gráfica
                     PlotterFrame.renderGraph(pasos);
-                } else if (!sortSense && b.dat[j].value < b.dat[j + 1].value) {
+                } else if (!sortSense && b.dat[j].compare(b.dat[j + 1]) == -1) {
                     // Descendentemente
                     // Intercambia los datos
                     Sort.swap(b.dat, j, j + 1);
