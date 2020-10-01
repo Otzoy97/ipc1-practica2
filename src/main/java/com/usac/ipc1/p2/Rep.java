@@ -8,11 +8,10 @@ package com.usac.ipc1.p2;
 import com.usac.ipc1.p2.graph.BarGraph;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Base64;
 import javax.imageio.ImageIO;
-
-import org.jfree.chart.encoders.EncoderUtil;
-import org.jfree.chart.encoders.ImageFormat;
 
 /**
  *
@@ -20,22 +19,18 @@ import org.jfree.chart.encoders.ImageFormat;
  */
 public class Rep {
 
-    private String algoritmo, tiempo, velocidad, pasos, orden;
+    private final String algoritmo, velocidad, orden;
 
     /**
      * Constructor para el reporte html
      *
      * @param algoritmo
-     * @param tiempo
      * @param velocidad
-     * @param pasos
      * @param orden
      */
-    public Rep(String algoritmo, String tiempo, String velocidad, String pasos, String orden) {
+    public Rep(String algoritmo, String velocidad, String orden) {
         this.algoritmo = algoritmo;
-        this.tiempo = tiempo;
         this.velocidad = velocidad;
-        this.pasos = pasos;
         this.orden = orden;
     }
 
@@ -44,7 +39,7 @@ public class Rep {
      *
      * @return
      */
-    public String genRep() {
+    public void genRep() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<!DOCTYPE html>\n");
@@ -77,13 +72,13 @@ public class Rep {
         sb.append("  </tr>\n");
         sb.append("  <tr>\n");
         sb.append("    <td class=\"tg-7d50\">Tiempo</td>\n");
-        sb.append("    <td class=\"tg-b1yu\">").append(tiempo).append("</td>\n");
+        sb.append("    <td class=\"tg-b1yu\">").append(PlotterFrame.lblTiempo.getText()).append("</td>\n");
         sb.append("    <td class=\"tg-7d50\">Velocidad</td>\n");
         sb.append("    <td class=\"tg-b1yu\">").append(velocidad).append("</td>\n");
         sb.append("  </tr>\n");
         sb.append("  <tr>\n");
         sb.append("    <td class=\"tg-7d50\">Pasos</td>\n");
-        sb.append("    <td class=\"tg-b1yu\">").append(pasos).append("</td>\n");
+        sb.append("    <td class=\"tg-b1yu\">").append(PlotterFrame.lblPasos.getText()).append("</td>\n");
         sb.append("    <td class=\"tg-7d50\">Orden</td>\n");
         sb.append("    <td class=\"tg-b1yu\">").append(orden).append("</td>\n");
         sb.append("  </tr>\n");
@@ -98,12 +93,12 @@ public class Rep {
         sb.append("  </tr>\n");
         sb.append("  <tr>\n");
         if (orden.equals("Ascendente")) {
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[0].name).append("</td>\n");
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[0].value).append("</td>\n");
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].name).append("</td>\n");
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].value).append("</td>\n");
         } else {
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[com.usac.ipc1.p2.PlotterFrame.sortedGraph.actualSize() - 1].name)
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].name)
                     .append("</td>\n");
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[com.usac.ipc1.p2.PlotterFrame.sortedGraph.actualSize() - 1].value)
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].value)
                     .append("</td>\n");
         }
 
@@ -117,12 +112,12 @@ public class Rep {
         sb.append("  </tr>\n");
         sb.append("  <tr>\n");
         if (orden.equals("Ascendente")) {
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[0].name).append("</td>\n");
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[0].value).append("</td>\n");
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].name).append("</td>\n");
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].value).append("</td>\n");
         } else {
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[com.usac.ipc1.p2.PlotterFrame.sortedGraph.actualSize() - 1].name)
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].name)
                     .append("</td>\n");
-            sb.append("    <td class=\"tg-iy0o\">").append(com.usac.ipc1.p2.PlotterFrame.sortedGraph.dat[com.usac.ipc1.p2.PlotterFrame.sortedGraph.actualSize() - 1].value)
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].value)
                     .append("</td>\n");
         }
         sb.append("  </tr>\n");
@@ -131,14 +126,18 @@ public class Rep {
         sb.append("</div>\n");
         sb.append("<br><br><br><br><br><hr>\n");
         sb.append("<h1 style=\"text-align:center\">").append("Datos desordenados").append("</h1>\n");
-        this.append(sb, com.usac.ipc1.p2.PlotterFrame.unsortedGraph);
+        this.append(sb, PlotterFrame.unsortedGraph);
         sb.append("<br><hr>\n");
         sb.append("<h1 style=\"text-align:center\">").append("Datos ordenados").append("</h1>\n");
-        this.append(sb, com.usac.ipc1.p2.PlotterFrame.sortedGraph);
+        this.append(sb, PlotterFrame.sortedGraph);
         sb.append("<br></body>\n");
         sb.append("</html>\n");
-
-        return sb.toString();
+        
+        try (FileWriter f = new FileWriter("rep-"+PlotterFrame.sortedGraph.getTituloGraph()+".html")){
+            f.write(sb.toString());
+        } catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     /**
