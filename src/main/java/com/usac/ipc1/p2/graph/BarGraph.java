@@ -98,6 +98,10 @@ public class BarGraph {
         return tituloX;
     }
 
+    public String getTituloGraph() {
+        return tituloGraph;
+    }
+
     public String getTituloY() {
         return tituloY;
     }
