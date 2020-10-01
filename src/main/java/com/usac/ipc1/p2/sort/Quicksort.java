@@ -4,14 +4,13 @@ import com.usac.ipc1.p2.PlotterFrame;
 import com.usac.ipc1.p2.Rep;
 import com.usac.ipc1.p2.graph.Bar;
 import com.usac.ipc1.p2.graph.BarGraph;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  *
  * @author erick
  */
-public class Quicksort extends Thread implements Runnable {
+public class Quicksort extends Thread {
 
     /**
      * Sentido de ordenamiento. {@code true} para ascendente, {@code false} para
@@ -35,7 +34,7 @@ public class Quicksort extends Thread implements Runnable {
         this.sortSense = sortSense;
         this.b = barGraph;
         this.velocidad = velocidad;
-        this.strVelocidad = strVelocidad = velocidad == 200 ? "Rápida" : velocidad == 400 ? "Media" : "Lenta";
+        this.strVelocidad = velocidad == 200 ? "Rápida" : velocidad == 400 ? "Media" : "Lenta";
     }
 
     /**

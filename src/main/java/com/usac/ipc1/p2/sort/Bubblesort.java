@@ -9,7 +9,7 @@ import java.util.Date;
  *
  * @author erick
  */
-public class Bubblesort extends Thread implements Runnable {
+public class Bubblesort extends Thread {
 
     /**
      * Sentido de ordenamiento. {@code true} para ascendente, {@code false} para
@@ -33,7 +33,7 @@ public class Bubblesort extends Thread implements Runnable {
         this.sortSense = sortSense;
         this.b = barGraph;
         this.velocidad = velocidad;
-        this.strVelocidad = strVelocidad = velocidad == 200 ? "Rápida" : velocidad == 400 ? "Media" : "Lenta";
+        this.strVelocidad = velocidad == 200 ? "Rápida" : velocidad == 400 ? "Media" : "Lenta";
     }
 
     /**
