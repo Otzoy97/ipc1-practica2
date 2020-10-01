@@ -3,9 +3,7 @@ package com.usac.ipc1.p2.sort;
 import com.usac.ipc1.p2.PlotterFrame;
 import com.usac.ipc1.p2.Rep;
 import com.usac.ipc1.p2.graph.BarGraph;
-import java.io.IOException;
 import java.util.Date;
-import javax.swing.ImageIcon;
 
 /**
  *
@@ -18,10 +16,11 @@ public class Bubblesort extends Thread implements Runnable {
      * descendente
      */
     private final boolean sortSense;
-    private BarGraph b;
-    private int pasos, velocidad;
+    private final BarGraph b;
+    private int pasos;
+    private final int velocidad;
     private String strVelocidad;
-    private long mStart, mActual;
+    private long mStart;
 
     /**
      *
@@ -44,7 +43,7 @@ public class Bubblesort extends Thread implements Runnable {
     public void run() {
         // Recupera el tiempo actual
         mStart = new Date().getTime();
-        // Utiliza tiempos locales
+        // Se utiliza para marcar la velocidad del ordenamiento
         long lRef0 = mStart;
         // Procede a ordenar el arreglo
         for (int i = 0; i < b.actualSize() - 1; i++) {
@@ -57,13 +56,13 @@ public class Bubblesort extends Thread implements Runnable {
                     // Intercambia los datos
                     Sort.swap(b.dat, j, j + 1);
                     // Actualiza la gráfica
-                    updateGraph();
+                    PlotterFrame.renderGraph(pasos);
                 } else if (!sortSense && b.dat[j].value < b.dat[j + 1].value) {
                     // Descendentemente
                     // Intercambia los datos
                     Sort.swap(b.dat, j, j + 1);
                     // Actualiza la gráfica
-                    updateGraph();
+                    PlotterFrame.renderGraph(pasos);
                 }
                 // Actualiza el tiempo
                 // Cuando la diferencia sea mayor a la velocidad
@@ -79,16 +78,5 @@ public class Bubblesort extends Thread implements Runnable {
         }
         // Al finalizar genera el reporte correspondiente
         new Rep("Bubblesort", strVelocidad, sortSense? "Ascendente": "Descendente").genRep();
-    }
-
-    /**
-     * Detiene la ejecución del hilo momentáneamente
-     */
-    private void updateGraph() {
-        try {
-            PlotterFrame.renderGraph(pasos);
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 }

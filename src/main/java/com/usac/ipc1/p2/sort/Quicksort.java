@@ -1,46 +1,70 @@
 package com.usac.ipc1.p2.sort;
 
+import com.usac.ipc1.p2.PlotterFrame;
+import com.usac.ipc1.p2.Rep;
 import com.usac.ipc1.p2.graph.BarGraph;
+import java.util.Date;
 
 /**
  *
  * @author erick
  */
-public class Quicksort {
+public class Quicksort extends Thread implements Runnable {
 
     /**
      * Sentido de ordenamiento. {@code true} para ascendente, {@code false} para
      * descendente
      */
     private final boolean sortSense;
+    private final BarGraph b;
+    private int pasos;
+    private final int velocidad;
+    private String strVelocidad;
+    private long mStart, lRef0;
 
     /**
      *
      * @param sortSense sentido de ordenamiento. {@code true} para ascendente,
      * {@code false} para descendente
+     * @param barGraph
+     * @param velocidad
      */
-    public Quicksort(boolean sortSense) {
+    public Quicksort(boolean sortSense, BarGraph barGraph, int velocidad) {
         this.sortSense = sortSense;
+        this.b = barGraph;
+        this.velocidad = velocidad;
+        this.strVelocidad = strVelocidad = velocidad == 200 ? "Rápida" : velocidad == 400 ? "Media" : "Lenta";
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void run() {
+        // Ordena los elementos
+        sort(b, 0, b.actualSize() - 1);
+        // Al finalizar genera el reporte correspondiente
+        new Rep("Quicksort", strVelocidad, sortSense ? "Ascendente" : "Descendente").genRep();
     }
 
     /**
      * Ordena utilizando el algorito quicksort
+     *
      * @param b Grafica de barras
      * @param x indice menor
      * @param y indice mayor
-     * @return
      */
-    public BarGraph sort(BarGraph b, int x, int y) {
+    public void sort(BarGraph b, int x, int y) {
         if (x < y) {
             int pIdx = this.sortSense ? partitionAsc(b, x, y) : partitionDesc(b, x, y);
             sort(b, x, pIdx - 1);
             sort(b, pIdx + 1, y);
         }
-        return b;
     }
 
     /**
      * Para ordenar ascendentemente
+     *
      * @param b Gráfica de barras
      * @param x indice menor
      * @param y indice mayor
@@ -66,12 +90,18 @@ public class Quicksort {
             if (i >= j) {
                 return j;
             }
+            // Cuenta los pasos
+            pasos++;
             com.usac.ipc1.p2.sort.Sort.swap(b.dat, i, j);
+            // Actualiza la gráfica
+            PlotterFrame.renderGraph(pasos);
+            this.updateT();
         }
     }
 
     /**
      * Para ordenar descendentemente
+     *
      * @param b Gráfica de barras
      * @param x indice menor
      * @param y indice mayor
@@ -96,7 +126,28 @@ public class Quicksort {
             if (i >= j) {
                 return j;
             }
+            // Cuenta los pasos
+            pasos++;
             com.usac.ipc1.p2.sort.Sort.swap(b.dat, i, j);
+            // Actualiza la gráfica
+            PlotterFrame.renderGraph(pasos);
+            this.updateT();
         }
+    }
+
+    /**
+     *
+     */
+    private void updateT() {
+        // Actualiza el tiempo
+        // Cuando la diferencia sea mayor a la velocidad
+        // será tiempo de otra iteración, mientras tanto
+        // seguirá ordenando
+        while ((new Date().getTime() - lRef0) < velocidad) {
+            // Actualiza el tiempo
+            PlotterFrame.updateTime(new Date().getTime() - mStart);
+        }
+        // Actualiza la referencia
+        lRef0 = new Date().getTime();
     }
 }
