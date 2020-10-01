@@ -628,9 +628,9 @@ public class PlotterFrame extends JFrame {
         slidVelocity.setPaintTicks(false);
         slidVelocity.setSnapToTicks(true);
         var lblSlide = slidVelocity.createStandardLabels(1, 0);
-        lblSlide.put(0, new JLabel(new ImageIcon("slow.png")));
-        lblSlide.put(1, new JLabel(new ImageIcon("medium.png")));
-        lblSlide.put(2, new JLabel(new ImageIcon("fast.png")));
+        lblSlide.put(0, new JLabel(new ImageIcon(getClass().getClassLoader().getResource("VelocityPNG/slow.png"))));
+        lblSlide.put(1, new JLabel(new ImageIcon(getClass().getClassLoader().getResource("VelocityPNG/medium.png"))));
+        lblSlide.put(2, new JLabel(new ImageIcon(getClass().getClassLoader().getResource("VelocityPNG/fast.png"))));
         slidVelocity.setLabelTable(lblSlide);
 
         gridBag = new GridBagConstraints();
