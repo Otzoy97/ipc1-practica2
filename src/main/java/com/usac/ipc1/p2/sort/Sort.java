@@ -2,7 +2,7 @@ package com.usac.ipc1.p2.sort;
 
 /**
  *
- * @author otzoy
+ * @author erick
  */
 public class Sort {
     /**
