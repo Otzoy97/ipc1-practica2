@@ -82,6 +82,7 @@ public class Shellsort extends Thread implements Runnable {
         }
         // Al finalizar genera el reporte correspondiente
         new Rep("Shellsort", strVelocidad, sortSense ? "Ascendente" : "Descendente").genRep();
+        PlotterFrame.btnSortGraph.setEnabled(true);
     }
 
     /**

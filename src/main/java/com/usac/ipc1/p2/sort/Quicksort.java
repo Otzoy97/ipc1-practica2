@@ -41,10 +41,15 @@ public class Quicksort extends Thread implements Runnable {
      */
     @Override
     public void run() {
+        // Recupera el tiempo actual
+        mStart = new Date().getTime();
+        // Se utiliza para marcar la velocidad del ordenamiento
+        lRef0 = mStart;
         // Ordena los elementos
-        sort(b, 0, b.actualSize() - 1);
+        this.sort(b, 0, b.actualSize() - 1);
         // Al finalizar genera el reporte correspondiente
         new Rep("Quicksort", strVelocidad, sortSense ? "Ascendente" : "Descendente").genRep();
+        PlotterFrame.btnSortGraph.setEnabled(true);
     }
 
     /**
@@ -85,7 +90,7 @@ public class Quicksort extends Thread implements Runnable {
             // Avanza hacia la izquierda
             do {
                 j--;
-            } while (b.dat[i].value > pv);
+            } while (b.dat[j].value > pv);
             // Detiene el ciclo
             if (i >= j) {
                 return j;
@@ -121,7 +126,7 @@ public class Quicksort extends Thread implements Runnable {
             // Avanza hacia la izquierda
             do {
                 j--;
-            } while (b.dat[i].value < pv);
+            } while (b.dat[j].value < pv);
             // Detiene el ciclo
             if (i >= j) {
                 return j;

@@ -31,8 +31,8 @@ import javax.swing.ImageIcon;
 
 import com.usac.ipc1.p2.graph.BarGraph;
 import com.usac.ipc1.p2.sort.Bubblesort;
-import java.awt.image.BufferedImage;
-import java.io.FileWriter;
+import com.usac.ipc1.p2.sort.Quicksort;
+import com.usac.ipc1.p2.sort.Shellsort;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -47,7 +47,8 @@ public class PlotterFrame extends JFrame {
 
     private JLabel lblPath;
     public static JLabel lblImg;
-    private JButton btnFindPath, btnGenGraph, btnSortGraph;
+    private JButton btnFindPath, btnGenGraph;
+    public static JButton btnSortGraph;
     private JTextField txtTitleGraph;
     private ButtonGroup btnGAlgorithm, btnGType;
     private JRadioButton rbtnAsce, rbtnDesc, rbtnBubble, rbtnShell, rbtnQuick;
@@ -123,7 +124,7 @@ public class PlotterFrame extends JFrame {
             // Genera la gráfica y la inserta en una etiqueta
             PlotterFrame.renderGraph(0);
             // Habilita el botón para ordenar la gráfica
-            this.btnSortGraph.setEnabled(true);
+            PlotterFrame.btnSortGraph.setEnabled(true);
         } catch (IOException | NumberFormatException ex) {
             System.out.println(ex.getMessage());
         }
@@ -134,27 +135,62 @@ public class PlotterFrame extends JFrame {
      * @param e
      */
     private void btnSortGraphAction(ActionEvent e) {
-        new Bubblesort(true, sortedGraph, 300).start();
+        // Recupera la información de los componentes involucrados
+        if (this.btnGAlgorithm.getSelection() != null && this.btnGType.getSelection() != null) {
+            var algo = this.btnGAlgorithm.getSelection();
+            var orden = this.btnGType.getSelection().getActionCommand().equals("Asc");
+            var velo = 600 / (this.slidVelocity.getValue() + 1);
+            PlotterFrame.btnSortGraph.setEnabled(false);
+            this.lblVelocidad.setText(velo == 200 ? "Rápida" : velo == 400 ? "Media" : "Lenta");
+            this.lblOrden.setText(orden ? "Ascendente" : "Descendente");
+            PlotterFrame.lblPasos.setText("0");
+            switch (algo.getActionCommand()) {
+                case "Bubble":
+                    this.lblAlgoritmo.setText("Bubblesort");
+                    new Bubblesort(orden, sortedGraph, velo).start();
+                    break;
+                case "Quick":
+                    this.lblAlgoritmo.setText("Quicksort");
+                    new Quicksort(orden, sortedGraph, velo).start();
+                    break;
+                case "Shell":
+                    this.lblAlgoritmo.setText("Shellsort");
+                    new Shellsort(orden, sortedGraph, velo).start();
+                    break;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,"Debe seleccionar el algoritmo y el orden", "Ordenar gráfica", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     /**
      * Actualiza la gráfica
      *
      * @param pasos
-     * @throws java.io.IOException
      */
-    public static void renderGraph(int pasos) throws IOException {
+    public static void renderGraph(int pasos) {
         // Actualiza la gráfica
-        var temp = new ImageIcon(sortedGraph.render());
-        lblImg.setIcon(temp);
-        lblImg.revalidate();
-        lblImg.repaint();
-        lblImg.update(lblImg.getGraphics());
-        // Actualiza el tiempo y los pasos
-        lblPasos.setText(pasos + "");
+        try {
+            var temp = new ImageIcon(sortedGraph.render());
+            // Coloca la imagen en la etiqueta
+            lblImg.setIcon(temp);
+            lblImg.revalidate();
+            lblImg.repaint();
+            lblImg.update(lblImg.getGraphics());
+            // Actualiza el tiempo y los pasos
+            lblPasos.setText(pasos + "");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
-    
-    public static void updateTime(long tiempo){
+
+    /**
+     * Actualiza la etiqueta que cuenta el tiempo
+     *
+     * @param tiempo número que se utilizará para sobreescribir el contenido de
+     * la etiqueta
+     */
+    public static void updateTime(long tiempo) {
         DateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
         lblTiempo.setText(sdf.format(tiempo));
     }
@@ -488,6 +524,7 @@ public class PlotterFrame extends JFrame {
         // OPCION BUBBLE
         rbtnBubble = new JRadioButton("Bubblesort");
         rbtnBubble.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 12));
+        rbtnBubble.setActionCommand("Bubble");
         btnGAlgorithm.add(rbtnBubble);
 
         gridBag = new GridBagConstraints();
@@ -499,6 +536,7 @@ public class PlotterFrame extends JFrame {
         // OPCION QUICK
         rbtnQuick = new JRadioButton("Quicksort");
         rbtnQuick.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 12));
+        rbtnQuick.setActionCommand("Quick");
         btnGAlgorithm.add(rbtnQuick);
 
         gridBag = new GridBagConstraints();
@@ -510,6 +548,7 @@ public class PlotterFrame extends JFrame {
         // OPCION SHELL
         rbtnShell = new JRadioButton("Shellsort");
         rbtnShell.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 12));
+        rbtnShell.setActionCommand("Shell");
         btnGAlgorithm.add(rbtnShell);
 
         gridBag = new GridBagConstraints();
@@ -541,6 +580,7 @@ public class PlotterFrame extends JFrame {
         // OPCION ASC
         rbtnAsce = new JRadioButton("Ascendente");
         rbtnAsce.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 12));
+        rbtnAsce.setActionCommand("Asc");
         btnGType.add(rbtnAsce);
 
         gridBag = new GridBagConstraints();
@@ -552,6 +592,7 @@ public class PlotterFrame extends JFrame {
         // OPCION DESC
         rbtnDesc = new JRadioButton("Descendente");
         rbtnDesc.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 12));
+        rbtnDesc.setActionCommand("Desc");
         btnGType.add(rbtnDesc);
 
         gridBag = new GridBagConstraints();
