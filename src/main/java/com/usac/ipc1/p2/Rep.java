@@ -68,7 +68,7 @@ public class Rep {
         sb.append("<table class=\"tga\">\n");
         sb.append("<tbody>\n");
         sb.append("  <tr>\n");
-        sb.append("    <td class=\"tg-7d51\" colspan=\"4\">").append(algoritmo).append("</td>\n");
+        sb.append("    <td class=\"tg-7d51\" colspan=\"4\"><h2 style=\"text-align:center\">").append(algoritmo).append("</h2></td>\n");
         sb.append("  </tr>\n");
         sb.append("  <tr>\n");
         sb.append("    <td class=\"tg-7d50\">Tiempo</td>\n");
@@ -112,12 +112,12 @@ public class Rep {
         sb.append("  </tr>\n");
         sb.append("  <tr>\n");
         if (orden.equals("Ascendente")) {
-            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].name).append("</td>\n");
-            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].value).append("</td>\n");
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].name).append("</td>\n");
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].value).append("</td>\n");
         } else {
-            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].name)
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].name)
                     .append("</td>\n");
-            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[PlotterFrame.sortedGraph.actualSize() - 1].value)
+            sb.append("    <td class=\"tg-iy0o\">").append(PlotterFrame.sortedGraph.dat[0].value)
                     .append("</td>\n");
         }
         sb.append("  </tr>\n");
